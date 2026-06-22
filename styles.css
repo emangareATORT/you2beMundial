@@ -193,7 +193,11 @@ h1 {
 }
 
 .mask-top {
-  display: none;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 11%;
+  z-index: 2;
 }
 
 .mask-bottom {
