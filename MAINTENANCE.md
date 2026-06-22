@@ -88,7 +88,8 @@ Puntos clave:
 - `selectVideo()` marca el partido activo y llama a `playSelected()` para reproducir automaticamente.
 - `playSelected()` carga el embed seguro, activa el cover inicial y permite reiniciar el resumen.
 - `playerCover` tapa el video durante los primeros segundos para evitar overlays iniciales.
-- `audioEnabled` controla si el embed se carga con `mute=1` o `mute=0`.
+- `audioEnabled` controla si el embed se carga con `mute=1` o `mute=0`; el boton debe mostrar `Audio: ON` o `Audio: OFF`.
+- La duracion se muestra como etiqueta visible en cada tarjeta y en el estado del partido seleccionado.
 - `controls=0`, `rel=0`, `disablekb=1` y `iv_load_policy=3` reducen superficies que puedan mostrar informacion externa.
 
 Las mascaras visuales estan en `styles.css`:
