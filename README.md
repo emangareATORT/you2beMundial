@@ -16,13 +16,13 @@ http://127.0.0.1:4173
 
 ## Archivo único para compartir
 
-El proyecto incluye un paquete autónomo:
+El proyecto puede generar un paquete autónomo:
 
 ```text
 zero-spoiler-single.js
 ```
 
-Para usarlo en otra computadora, basta con compartir ese archivo. La otra persona debe tener Node.js instalado y ejecutarlo así:
+Después de generarlo, basta con compartir ese archivo. La otra persona debe tener Node.js instalado y ejecutarlo así:
 
 ```bash
 node zero-spoiler-single.js
