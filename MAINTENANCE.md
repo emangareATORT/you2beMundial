@@ -71,7 +71,7 @@ Partido disponible: Pais 1 vs Pais 2
 
 Esto sucede en `stripSpoilers(title)`.
 
-La deteccion de paises usa `COUNTRY_NAMES`. Las banderas visibles salen de `COUNTRY_FLAGS`. Si faltan partidos porque no detecta algun pais, agregar el pais a esa lista y su bandera al mapa. Evitar agregar clubes o apodos si pueden confundirse con informacion de resultado o contexto sensible.
+La deteccion de paises usa `COUNTRY_NAMES`. Las banderas visibles salen de `COUNTRY_FLAGS` y deben mostrarse junto al nombre de cada pais, por ejemplo `🇦🇷 Argentina vs 🇦🇹 Austria`. Si faltan partidos porque no detecta algun pais, agregar el pais a esa lista y su bandera al mapa. Evitar agregar clubes o apodos si pueden confundirse con informacion de resultado o contexto sensible.
 
 ## Duracion
 
