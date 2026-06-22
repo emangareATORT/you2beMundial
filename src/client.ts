@@ -2,6 +2,7 @@ type VideoItem = {
   id: string;
   safeTitle: string;
   publishedAt: string;
+  duration: string | null;
   source: string;
 };
 
@@ -22,10 +23,12 @@ const playerFrame = document.querySelector<HTMLDivElement>("#playerFrame")!;
 const youtubePlayer = document.querySelector<HTMLIFrameElement>("#youtubePlayer")!;
 const playerCover = document.querySelector<HTMLDivElement>("#playerCover")!;
 const playPauseButton = document.querySelector<HTMLButtonElement>("#playPauseButton")!;
+const audioButton = document.querySelector<HTMLButtonElement>("#audioButton")!;
 const stopButton = document.querySelector<HTMLButtonElement>("#stopButton")!;
 
 let selectedVideo: VideoItem | null = null;
 let isPlaying = false;
+let audioEnabled = false;
 let coverTimer = 0;
 
 function setStatus(message: string, ready = false): void {
@@ -46,7 +49,7 @@ function formatTime(value: string): string {
 function embedUrl(videoId: string, autoplay: boolean): string {
   const params = new URLSearchParams({
     autoplay: autoplay ? "1" : "0",
-    mute: "1",
+    mute: audioEnabled ? "0" : "1",
     controls: "0",
     modestbranding: "1",
     rel: "0",
@@ -73,13 +76,14 @@ function renderList(items: VideoItem[], blockedCount = 0): void {
   }
 
   items.forEach((item, index) => {
+    const durationText = item.duration ? ` · duración ${item.duration}` : "";
     const button = document.createElement("button");
     button.type = "button";
     button.className = "match-card";
     button.dataset.videoId = item.id;
     button.innerHTML = `
       <strong>${item.safeTitle || `Resumen ${index + 1}`}</strong>
-      <span>${item.source || "Fuente segura"} · ${formatTime(item.publishedAt)} · resumen ${index + 1}</span>
+      <span>${item.source || "Fuente segura"} · ${formatTime(item.publishedAt)}${durationText} · resumen ${index + 1}</span>
     `;
     button.addEventListener("click", () => selectVideo(item, button));
     matchList.appendChild(button);
@@ -96,8 +100,10 @@ function selectVideo(item: VideoItem, button: HTMLButtonElement): void {
   youtubePlayer.src = "about:blank";
   playerCover.classList.remove("is-clear");
   playPauseButton.disabled = false;
+  audioButton.disabled = false;
   stopButton.disabled = false;
   playPauseButton.textContent = "Reproducir";
+  audioButton.textContent = audioEnabled ? "Audio activado" : "Audio silenciado";
 }
 
 function playSelected(): void {
@@ -112,6 +118,14 @@ function playSelected(): void {
   playPauseButton.textContent = "Reiniciar";
 }
 
+function toggleAudio(): void {
+  audioEnabled = !audioEnabled;
+  audioButton.textContent = audioEnabled ? "Audio activado" : "Audio silenciado";
+  if (selectedVideo && isPlaying) {
+    youtubePlayer.src = embedUrl(selectedVideo.id, true);
+  }
+}
+
 function stopPlayback(): void {
   window.clearTimeout(coverTimer);
   youtubePlayer.src = "about:blank";
@@ -119,6 +133,7 @@ function stopPlayback(): void {
   playerFrame.classList.add("is-hidden");
   emptyState.classList.remove("is-hidden");
   playPauseButton.disabled = true;
+  audioButton.disabled = true;
   stopButton.disabled = true;
   selectedVideo = null;
   isPlaying = false;
@@ -153,6 +168,7 @@ async function loadVideos(): Promise<void> {
 
 refreshButton.addEventListener("click", loadVideos);
 playPauseButton.addEventListener("click", playSelected);
+audioButton.addEventListener("click", toggleAudio);
 stopButton.addEventListener("click", stopPlayback);
 
 void loadVideos();
