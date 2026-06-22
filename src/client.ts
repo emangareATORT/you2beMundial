@@ -1,6 +1,7 @@
 type VideoItem = {
   id: string;
   safeTitle: string;
+  countries?: { name: string; flag: string }[];
   publishedAt: string;
   duration: string | null;
   source: string;
@@ -46,6 +47,20 @@ function formatTime(value: string): string {
   }).format(date);
 }
 
+function renderFlags(item: VideoItem): string {
+  const countries = Array.isArray(item.countries) ? item.countries : [];
+  if (countries.length === 0) return "";
+
+  return `<span class="country-flags" aria-label="${countries.map((country) => country.name).join(" contra ")}">${countries
+    .map((country) => `<span class="country-flag" title="${country.name}">${country.flag || ""}</span>`)
+    .join("")}</span>`;
+}
+
+function selectedLabel(item: VideoItem): string {
+  const flags = Array.isArray(item.countries) ? item.countries.map((country) => country.flag).join(" ") : "";
+  return `${flags ? `${flags} ` : ""}${item.safeTitle || "Partido seleccionado"}`;
+}
+
 function embedUrl(videoId: string, autoplay: boolean): string {
   const params = new URLSearchParams({
     autoplay: autoplay ? "1" : "0",
@@ -82,7 +97,7 @@ function renderList(items: VideoItem[], blockedCount = 0): void {
     button.className = "match-card";
     button.dataset.videoId = item.id;
     button.innerHTML = `
-      <strong>${item.safeTitle || `Resumen ${index + 1}`}</strong>
+      <strong>${renderFlags(item)}<span>${item.safeTitle || `Resumen ${index + 1}`}</span></strong>
       <span>${item.source || "Fuente segura"} · ${formatTime(item.publishedAt)}${durationText} · resumen ${index + 1}</span>
       <small>Seleccionar y reproducir</small>
     `;
@@ -101,7 +116,7 @@ function selectVideo(item: VideoItem, button: HTMLButtonElement): void {
   audioButton.disabled = false;
   playPauseButton.textContent = "Reiniciar resumen";
   audioButton.textContent = audioEnabled ? "Audio activado" : "Audio silenciado";
-  currentSelection.textContent = item.safeTitle || "Partido seleccionado";
+  currentSelection.textContent = selectedLabel(item);
   playSelected();
 }
 
