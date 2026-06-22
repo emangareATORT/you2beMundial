@@ -30,19 +30,26 @@ function formatTime(value) {
   }).format(date);
 }
 
-function renderFlags(item) {
-  const countries = Array.isArray(item.countries) ? item.countries : [];
-  if (countries.length === 0) return "";
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
-  return `<span class="country-flags" aria-label="${countries.map((country) => country.name).join(" contra ")}">${countries
-    .map((country) => `<span class="country-flag" title="${country.name}">${country.flag || ""}</span>`)
-    .join("")}</span>`;
+function titleWithCountryFlags(item) {
+  const countries = Array.isArray(item.countries) ? item.countries : [];
+  let title = item.safeTitle || "Partido seleccionado";
+
+  countries.forEach((country) => {
+    if (!country.name) return;
+    const label = country.flag ? `${country.flag} ${country.name}` : country.name;
+    title = title.replace(new RegExp(`\\b${escapeRegExp(country.name)}\\b`, "g"), label);
+  });
+
+  return title;
 }
 
 function selectedLabel(item) {
-  const flags = Array.isArray(item.countries) ? item.countries.map((country) => country.flag).join(" ") : "";
   const duration = item.duration ? ` · ${item.duration}` : "";
-  return `${flags ? `${flags} ` : ""}${item.safeTitle || "Partido seleccionado"}${duration}`;
+  return `${titleWithCountryFlags(item)}${duration}`;
 }
 
 function embedUrl(videoId, autoplay) {
@@ -81,7 +88,7 @@ function renderList(items, blockedCount = 0) {
     button.className = "match-card";
     button.dataset.videoId = item.id;
     button.innerHTML = `
-      <strong>${renderFlags(item)}<span>${item.safeTitle || `Resumen ${index + 1}`}</span>${durationBadge}</strong>
+      <strong><span>${titleWithCountryFlags(item) || `Resumen ${index + 1}`}</span>${durationBadge}</strong>
       <span>${item.source || "Fuente segura"} · ${formatTime(item.publishedAt)} · resumen ${index + 1}</span>
       <small>Seleccionar y reproducir</small>
     `;
