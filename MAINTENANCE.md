@@ -71,7 +71,7 @@ Partido disponible: Pais 1 vs Pais 2
 
 Esto sucede en `stripSpoilers(title)`.
 
-La deteccion de paises usa `COUNTRY_NAMES`. Si faltan partidos porque no detecta algun pais, agregar el pais a esa lista. Evitar agregar clubes o apodos si pueden confundirse con informacion de resultado o contexto sensible.
+La deteccion de paises usa `COUNTRY_NAMES`. Las banderas visibles salen de `COUNTRY_FLAGS`. Si faltan partidos porque no detecta algun pais, agregar el pais a esa lista y su bandera al mapa. Evitar agregar clubes o apodos si pueden confundirse con informacion de resultado o contexto sensible.
 
 ## Duracion
 
@@ -117,6 +117,10 @@ Respuesta esperada:
     {
       "id": "videoId",
       "safeTitle": "Partido disponible: Pais 1 vs Pais 2",
+      "countries": [
+        { "name": "Pais 1", "flag": "🏳️" },
+        { "name": "Pais 2", "flag": "🏳️" }
+      ],
       "publishedAt": "2026-06-22T00:00:00.000Z",
       "duration": "8:07",
       "source": "ESPN Fans"
