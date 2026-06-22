@@ -5,6 +5,10 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "pack:single": "node scripts/build-single-file.js",
+    "pack:mac": "node scripts/build-single-file.js && node scripts/package-mac-app.js",
+    "pack:windows": "node scripts/build-single-file.js && node scripts/package-windows-app.js",
+    "pack:desktop": "node scripts/build-single-file.js && node scripts/package-mac-app.js && node scripts/package-windows-app.js"
   }
 }
