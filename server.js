@@ -215,6 +215,15 @@ function parseRelativePublishTime(value) {
   return new Date(Date.now() - ageMs).toISOString();
 }
 
+function parseDurationFromChunk(chunk) {
+  const rawText =
+    chunk.match(/"thumbnailBadgeViewModel":\{"text":"([0-9:]+)"/)?.[1] ||
+    chunk.match(/"text":"([0-9:]+)","badgeStyle":"THUMBNAIL_OVERLAY_BADGE_STYLE_DEFAULT"/)?.[1] ||
+    "";
+
+  return /^\d{1,2}(?::\d{2}){1,2}$/.test(rawText) ? rawText : null;
+}
+
 async function resolveChannelId(channel) {
   if (channelIdCache.has(channel.handle)) return channelIdCache.get(channel.handle);
 
@@ -244,6 +253,7 @@ function parseFeed(xml, channel) {
       originalTitle: decodeEntities(title),
       safeTitle: stripSpoilers(title),
       publishedAt,
+      duration: null,
       source: channel.label,
     };
   });
@@ -272,6 +282,7 @@ function parseChannelPage(html, channel) {
       "";
     const title = decodeJsonString(titleRaw);
     const publishedAt = parseRelativePublishTime(decodeJsonString(relativeTimeRaw));
+    const duration = parseDurationFromChunk(chunk);
 
     if (!id || !title || !publishedAt || !titleMatchesRequiredSummary(title) || !hasTwoCountries(title)) continue;
 
@@ -280,6 +291,7 @@ function parseChannelPage(html, channel) {
       originalTitle: title,
       safeTitle: stripSpoilers(title),
       publishedAt,
+      duration,
       source: channel.label,
     });
   }
