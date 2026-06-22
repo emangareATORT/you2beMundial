@@ -157,13 +157,34 @@ h1 {
 }
 
 .match-card strong {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 8px;
   font-size: 1rem;
   line-height: 1.3;
 }
 
-.match-card span {
+.match-card strong > span:not(.country-flags) {
+  min-width: 0;
+}
+
+.country-flags {
+  display: inline-flex;
+  gap: 4px;
+  flex: 0 0 auto;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.country-flag {
+  display: inline-grid;
+  place-items: center;
+  width: 1.35em;
+  height: 1.35em;
+}
+
+.match-card > span {
   display: block;
   color: var(--muted);
   font-size: 0.88rem;
