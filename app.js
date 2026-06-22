@@ -7,10 +7,12 @@ const playerFrame = document.querySelector("#playerFrame");
 const youtubePlayer = document.querySelector("#youtubePlayer");
 const playerCover = document.querySelector("#playerCover");
 const playPauseButton = document.querySelector("#playPauseButton");
+const audioButton = document.querySelector("#audioButton");
 const stopButton = document.querySelector("#stopButton");
 
 let selectedVideo = null;
 let isPlaying = false;
+let audioEnabled = false;
 let coverTimer = 0;
 
 function setStatus(message, ready = false) {
@@ -31,7 +33,7 @@ function formatTime(value) {
 function embedUrl(videoId, autoplay) {
   const params = new URLSearchParams({
     autoplay: autoplay ? "1" : "0",
-    mute: "1",
+    mute: audioEnabled ? "0" : "1",
     controls: "0",
     modestbranding: "1",
     rel: "0",
@@ -58,13 +60,14 @@ function renderList(items, blockedCount = 0) {
   }
 
   items.forEach((item, index) => {
+    const durationText = item.duration ? ` · duración ${item.duration}` : "";
     const button = document.createElement("button");
     button.type = "button";
     button.className = "match-card";
     button.dataset.videoId = item.id;
     button.innerHTML = `
       <strong>${item.safeTitle || `Resumen ${index + 1}`}</strong>
-      <span>${item.source || "Fuente segura"} · ${formatTime(item.publishedAt)} · resumen ${index + 1}</span>
+      <span>${item.source || "Fuente segura"} · ${formatTime(item.publishedAt)}${durationText} · resumen ${index + 1}</span>
     `;
     button.addEventListener("click", () => selectVideo(item, button));
     matchList.appendChild(button);
@@ -81,8 +84,10 @@ function selectVideo(item, button) {
   youtubePlayer.src = "about:blank";
   playerCover.classList.remove("is-clear");
   playPauseButton.disabled = false;
+  audioButton.disabled = false;
   stopButton.disabled = false;
   playPauseButton.textContent = "Reproducir";
+  audioButton.textContent = audioEnabled ? "Audio activado" : "Audio silenciado";
 }
 
 function playSelected() {
@@ -97,6 +102,14 @@ function playSelected() {
   playPauseButton.textContent = "Reiniciar";
 }
 
+function toggleAudio() {
+  audioEnabled = !audioEnabled;
+  audioButton.textContent = audioEnabled ? "Audio activado" : "Audio silenciado";
+  if (selectedVideo && isPlaying) {
+    youtubePlayer.src = embedUrl(selectedVideo.id, true);
+  }
+}
+
 function stopPlayback() {
   window.clearTimeout(coverTimer);
   youtubePlayer.src = "about:blank";
@@ -104,6 +117,7 @@ function stopPlayback() {
   playerFrame.classList.add("is-hidden");
   emptyState.classList.remove("is-hidden");
   playPauseButton.disabled = true;
+  audioButton.disabled = true;
   stopButton.disabled = true;
   selectedVideo = null;
   isPlaying = false;
@@ -138,6 +152,7 @@ async function loadVideos() {
 
 refreshButton.addEventListener("click", loadVideos);
 playPauseButton.addEventListener("click", playSelected);
+audioButton.addEventListener("click", toggleAudio);
 stopButton.addEventListener("click", stopPlayback);
 
 void loadVideos();
