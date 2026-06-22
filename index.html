@@ -30,7 +30,7 @@
       <section class="player-stage" aria-label="Reproductor seguro">
         <div class="safe-browser">
           <div id="emptyState" class="empty-state">
-            <p>Seleccioná un resumen para reproducirlo en modo spoiler cero.</p>
+            <p>Seleccioná un partido de la lista. La reproducción empieza automáticamente en modo seguro.</p>
           </div>
           <div id="playerFrame" class="player-frame is-hidden">
             <iframe
@@ -50,9 +50,9 @@
         </div>
 
         <div class="controls-bar">
-          <button id="playPauseButton" class="primary-button" type="button" disabled>Reproducir</button>
+          <div id="currentSelection" class="current-selection">Sin partido seleccionado</div>
+          <button id="playPauseButton" class="primary-button" type="button" disabled>Reiniciar resumen</button>
           <button id="audioButton" class="secondary-button" type="button" disabled>Audio silenciado</button>
-          <button id="stopButton" class="secondary-button" type="button" disabled>Ocultar video</button>
         </div>
 
         <div class="safety-note">
