@@ -19,7 +19,10 @@ const standalone = serverSource
   .replace('import { readFile } from "node:fs/promises";\n', "")
   .replace('import { extname, join, normalize } from "node:path";\n', "")
   .replace('const ROOT = process.cwd();\n', "")
-  .replace("const ONE_DAY_MS = 24 * 60 * 60 * 1000;\n", `const ONE_DAY_MS = 24 * 60 * 60 * 1000;\n${assetsBlock}`)
+  .replace(
+    "const RECENT_WINDOW_MS = 48 * 60 * 60 * 1000;\n",
+    () => `const RECENT_WINDOW_MS = 48 * 60 * 60 * 1000;\n${assetsBlock}`,
+  )
   .replace(
     /async function serveFile\(req, res\) \{[\s\S]*?\n\}\n\nconst server = createServer/,
     `async function serveFile(req, res) {
