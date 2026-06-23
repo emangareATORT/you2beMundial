@@ -84,7 +84,7 @@ npm run pack:desktop
 
 ## Regla de seguridad
 
-La app lista los videos publicados durante las últimas 24 horas por estas fuentes, siempre que el título original incluya la palabra `RESUMEN`:
+La app lista los videos publicados durante las últimas 48 horas por estas fuentes, siempre que el título original incluya la palabra `RESUMEN`:
 
 - `https://www.youtube.com/@dsportsok`
 - `https://www.youtube.com/@ESPNFans`
