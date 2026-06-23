@@ -27,7 +27,7 @@ Para agregar una fuente, sumar otro objeto a `CHANNELS`. Antes de mostrar videos
 
 Un video aparece en la lista solo si cumple estas condiciones:
 
-1. Fue publicado en las ultimas 24 horas.
+1. Fue publicado en las ultimas 48 horas.
 2. El titulo original contiene la palabra `RESUMEN`.
 3. El titulo original permite detectar al menos dos paises.
 4. YouTube permite reproducirlo embebido dentro de la app.
@@ -66,12 +66,12 @@ Si se agregan campos nuevos, revisar que no contengan spoilers antes de enviarlo
 El servidor convierte el titulo original en una etiqueta neutral:
 
 ```text
-Partido disponible: Pais 1 vs Pais 2
+Pais 1 vs Pais 2
 ```
 
 Esto sucede en `stripSpoilers(title)`.
 
-La deteccion de paises usa `COUNTRY_NAMES`. Las banderas visibles salen de `COUNTRY_FLAGS` y deben mostrarse junto al nombre de cada pais, por ejemplo `🇦🇷 Argentina vs 🇦🇹 Austria`. Si faltan partidos porque no detecta algun pais, agregar el pais a esa lista y su bandera al mapa. Evitar agregar clubes o apodos si pueden confundirse con informacion de resultado o contexto sensible.
+La deteccion de paises usa `COUNTRY_NAMES`. Si el titulo contiene un marcador, `extractCountries()` prioriza ese segmento para evitar tomar paises mencionados en frases editoriales que no corresponden al partido. Las banderas visibles salen de `COUNTRY_FLAGS` y deben mostrarse junto al nombre de cada pais, por ejemplo `🇦🇷 Argentina vs 🇦🇹 Austria`. Si faltan partidos porque no detecta algun pais, agregar el pais a esa lista, su bandera al mapa del servidor y su codigo en `COUNTRY_CODES` del cliente. Evitar agregar clubes o apodos si pueden confundirse con informacion de resultado o contexto sensible.
 
 ## Duracion
 
@@ -88,8 +88,10 @@ Puntos clave:
 - `selectVideo()` marca el partido activo y llama a `playSelected()` para reproducir automaticamente.
 - `playSelected()` carga el embed seguro, activa el cover inicial y permite reiniciar el resumen.
 - `playerCover` tapa el video durante los primeros segundos para evitar overlays iniciales.
-- `audioEnabled` controla si el embed se carga con `mute=1` o `mute=0`; el boton debe mostrar `Audio: ON` o `Audio: OFF`.
-- La duracion se muestra como etiqueta visible en cada tarjeta y en el estado del partido seleccionado.
+- `audioEnabled` controla si el embed se carga con `mute=1` o `mute=0`; el boton debe mostrar `Audio: ON` o `Audio: OFF` y cambiar el audio sin reiniciar el video.
+- `rewindTenSeconds()` retrocede el video 10 segundos usando comandos del reproductor embebido.
+- `toggleMatchPanel()` repliega o muestra la lista de partidos para darle mas ancho al reproductor.
+- La duracion se muestra como una etiqueta minima en cada tarjeta y en el estado del partido seleccionado. Si falta en la pagina del canal, el servidor intenta completarla leyendo la duracion tecnica del video.
 - `controls=0`, `rel=0`, `disablekb=1` y `iv_load_policy=3` reducen superficies que puedan mostrar informacion externa.
 
 Las mascaras visuales estan en `styles.css`:
@@ -117,7 +119,7 @@ Respuesta esperada:
   "items": [
     {
       "id": "videoId",
-      "safeTitle": "Partido disponible: Pais 1 vs Pais 2",
+      "safeTitle": "Pais 1 vs Pais 2",
       "countries": [
         { "name": "Pais 1", "flag": "🏳️" },
         { "name": "Pais 2", "flag": "🏳️" }
